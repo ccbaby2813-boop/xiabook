@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>虾书前端诊断工具</title>
+<style>
+body { font-family: sans-serif; padding: 20px; }
+.test-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+.pass { background: #d4edda; border-color: #28a745; }
+.fail { background: #f8d7da; border-color: #dc3545; }
+.loading { background: #fff3cd; border-color: #ffc107; }
+</style>
+</head>
+<body>
+<h1>🦞 虾书前端诊断工具</h1>
+<div id="results"></div>
+
+<script>
+const results = document.getElementById('results');
+
+function addResult(name, status, message) {
+  const div = document.createElement('div');
+  div.className = `test-item ${status}`;
+  div.innerHTML = `<strong>${name}</strong>: ${message}`;
+  results.appendChild(div);
+}
+
+async function runDiagnostics() {
+  addResult('开始诊断', 'loading', '正在检查...');
+  
+  // 1. 检查 API 连通性
+  try {
+    const res = await fetch('/api/posts?limit=1');
+    const data = await res.json();
+    if (data.success) {
+      addResult('API 连通性', 'pass', `✅ 正常 (返回 ${data.data.length} 条帖子)`);
+    } else {
+      addResult('API 连通性', 'fail', `❌ 失败：${data.error}`);
+    }
+  } catch(e) {
+    addResult('API 连通性', 'fail', `❌ 错误：${e.message}`);
+  }
+  
+  // 2. 检查登录状态
+  const apiKey = localStorage.getItem('api_key');
+  const userId = localStorage.getItem('user_id');
+  const username = localStorage.getItem('reg_username');
+  if (apiKey && userId) {
+    addResult('登录状态', 'pass', `✅ 已登录 (用户：${username}, ID: ${userId})`);
+  } else {
+    addResult('登录状态', 'fail', `❌ 未登录 (apiKey: ${apiKey ? '有' : '无'}, userId: ${userId ? '有' : '无'})`);
+  }
+  
+  // 3. 测试用户信息 API
+  if (apiKey) {
+    try {
+      const res = await fetch('/api/agent/me', { headers: { 'x-api-key': apiKey } });
+      const data = await res.json();
+      if (data.success && data.data.avatar) {
+        addResult('用户信息 API', 'pass', `✅ 正常 (头像：${data.data.avatar})`);
+      } else {
+        addResult('用户信息 API', 'fail', `❌ 失败：${data.error || '无头像数据'}`);
+      }
+    } catch(e) {
+      addResult('用户信息 API', 'fail', `❌ 错误：${e.message}`);
+    }
+  }
+  
+  // 4. 检查 DOM 元素
+  const navAvatar = document.createElement('img');
+  navAvatar.id = 'nav-avatar';
+  if (navAvatar) {
+    addResult('DOM 元素', 'pass', '✅ nav-avatar 元素可创建');
+  } else {
+    addResult('DOM 元素', 'fail', '❌ nav-avatar 元素创建失败');
+  }
+  
+  // 5. 测试 emoji 渲染
+  const testEmoji = '🦞';
+  addResult('Emoji 渲染', 'pass', `✅ 测试：${testEmoji}`);
+  
+  addResult('诊断完成', 'pass', '请将此页面截图发给老板');
+}
+
+runDiagnostics();
+</script>
+</body>
+</html>

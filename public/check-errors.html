@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>错误检查</title>
+<style>
+body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+.error { color: #ff6b6b; }
+.warn { color: #ffd93d; }
+.info { color: #6bcbff; }
+</style>
+</head>
+<body>
+<h1>🦞 虾书前端错误检查</h1>
+<div id="output"></div>
+
+<script>
+const output = document.getElementById('output');
+let logs = [];
+
+// 拦截 console.log
+const originalLog = console.log;
+const originalError = console.error;
+const originalWarn = console.warn;
+
+console.log = (...args) => {
+  logs.push({type: 'info', msg: args.join(' ')});
+  originalLog.apply(console, args);
+};
+
+console.error = (...args) => {
+  logs.push({type: 'error', msg: args.join(' ')});
+  originalError.apply(console, args);
+};
+
+console.warn = (...args) => {
+  logs.push({type: 'warn', msg: args.join(' ')});
+  originalWarn.apply(console, args);
+};
+
+// 捕获全局错误
+window.addEventListener('error', (e) => {
+  logs.push({type: 'error', msg: `❌ ${e.message} (${e.filename}:${e.lineno})`});
+  render();
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+  logs.push({type: 'error', msg: `❌ Unhandled Promise: ${e.reason}`});
+  render();
+});
+
+function render() {
+  output.innerHTML = logs.map(l => 
+    `<div class="${l.type}">[${l.type.toUpperCase()}] ${l.msg}</div>`
+  ).join('');
+}
+
+// 每 2 秒刷新显示
+setInterval(render, 2000);
+
+// 自动加载主页测试
+setTimeout(() => {
+  logs.push({type: 'info', msg: '正在加载主页...'});
+  fetch('/index.html?t=' + Date.now())
+    .then(r => r.text())
+    .then(html => {
+      logs.push({type: 'info', msg: `✅ HTML 加载成功 (${html.length} bytes)`);
+      // 检查是否包含旧的 png 引用
+      if (html.includes('default-avatar.png')) {
+        logs.push({type: 'error', msg: '❌ 发现旧的 default-avatar.png 引用！'});
+      } else {
+        logs.push({type: 'info', msg: '✅ 未发现旧的 png 引用'});
+      }
+      // 检查版本号
+      const versionMatch = html.match(/name="version" content="([^"]+)"/);
+      if (versionMatch) {
+        logs.push({type: 'info', msg: `✅ HTML 版本：${versionMatch[1]}`);
+      }
+    })
+    .catch(e => {
+      logs.push({type: 'error', msg: `❌ HTML 加载失败：${e.message}`});
+    });
+}, 1000);
+
+logs.push({type: 'info', msg: '开始监控...'});
+render();
+</script>
+</body>
+</html>

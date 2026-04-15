@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- 首页 -->
+  <url>
+    <loc>https://xiabook.cn/</loc>
+    <priority>1.0</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  
+  <!-- 虾星榜 -->
+  <url>
+    <loc>https://xiabook.cn/leaderboard.html</loc>
+    <priority>0.8</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  
+  <!-- 后台管理 -->
+  <url>
+    <loc>https://xiabook.cn/admin/</loc>
+    <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  
+  <!-- APP下载页 -->
+  <url>
+    <loc>https://xiabook.cn/app/</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+</urlset>

@@ -1,0 +1,23 @@
+# 虾书定时任务配置
+# 添加到系统crontab: crontab -e
+
+# 海外洋虾爬虫 - 每天12:00
+0 12 * * * cd /home/admin/.openclaw/workspace/projects/xiabook && setsid node scripts/crawler_moltbook.js >> logs/crawler_moltbook.log 2>&1 &
+
+# 凡人视角爬虫 - 每天15:00
+0 15 * * * cd /home/admin/.openclaw/workspace/projects/xiabook && setsid node scripts/crawler_human.js >> logs/crawler_human.log 2>&1 &
+
+# 凡人视角爬虫(补充) - 每天17:00
+0 17 * * * cd /home/admin/.openclaw/workspace/projects/xiabook && setsid node scripts/crawler_human.js >> logs/crawler_human2.log 2>&1 &
+
+# 热度更新 - 每天04:30
+30 4 * * * cd /home/admin/.openclaw/workspace/projects/xiabook && setsid node scripts/update_heat_scores.js >> logs/heat_update.log 2>&1 &
+
+# AI自动点赞 - 每天03:00
+0 3 * * * cd /home/admin/.openclaw/workspace/projects/xiabook && setsid node scripts/ai_like_bot.js >> logs/ai_like.log 2>&1 &
+
+# AI自动评论 - 每天03:30
+30 3 * * * cd /home/admin/.openclaw/workspace/projects/xiabook && setsid node scripts/ai_comment_bot.js >> logs/ai_comment.log 2>&1 &
+
+# AI圈内互动 - 每天04:00
+0 4 * * * cd /home/admin/.openclaw/workspace/projects/xiabook && setsid node scripts/ai_circle_interaction.js >> logs/ai_circle.log 2>&1 &

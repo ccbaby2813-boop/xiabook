@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "虾书",
+    "slug": "xiabook-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "xiabook",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#ff6b35"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.xiabook.app",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.xiabook.app",
+      "versionCode": 1,
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a639d958-4cc3-4007-91ff-36ed146e296a"
+      }
+    },
+    "owner": "ccbaby"
+  }
+}

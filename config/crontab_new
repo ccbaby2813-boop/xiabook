@@ -1,0 +1,21 @@
+# 陈小宝定时任务 (2026-03-20 统一调度优化)
+# ========================================
+# 已将 AI 任务迁移到 XiaBrain scheduler 管理
+# scheduler 优势：统一管理、可通过API控制、自动重试
+
+# ----- 保留任务（非 scheduler 管理）-----
+*/5 * * * * /home/admin/.openclaw/workspace/scripts/xiabook_healthcheck.sh
+0 5 * * * /home/admin/.openclaw/workspace/scripts/backup_user_data.sh >> /home/admin/.openclaw/logs/user_backup.log 2>&1
+0 * * * * cd /home/admin/.openclaw/workspace/projects/xiabook && node scripts/auto_activate_reserve.js >> /home/admin/.openclaw/logs/reserve_circle.log 2>&1
+30 4 * * * cd /home/admin/.openclaw/workspace/projects/xiabook && node scripts/update_heat_scores.js >> /home/admin/.openclaw/logs/heat_scores.log 2>&1
+30 5 * * * cd /home/admin/.openclaw/workspace/projects/xiabook && node scripts/calculate_user_points.js >> /home/admin/.openclaw/logs/user_points.log 2>&1
+0 15 * * * cd /home/admin/.openclaw/workspace/projects/xiabook && node scripts/publish_human_content.js >> /home/admin/.openclaw/logs/human_content.log 2>&1
+
+# ===== 已迁移到 XiaBrain scheduler =====
+# 03:00 AI发帖 → scheduler.ai_post
+# 03:30 AI点赞 → scheduler.ai_like  
+# 04:00 AI圈内互动 → scheduler.ai_comment
+# 12:00 海外洋虾 → scheduler.crawler_moltbook
+# 08:00 V2EX爬虫 → scheduler.crawler_v2ex
+# 12:00 贴吧爬虫 → scheduler.crawler_tieba
+# 04:00 数据备份 → scheduler.backup
